@@ -6,8 +6,8 @@ datos/
 .claude/
 shorts/
 entrada/
-guiones/
-trabajo/
+/guiones/
+/trabajo/
 __pycache__/
 *.pyc
 *.log
