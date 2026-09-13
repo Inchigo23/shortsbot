@@ -1,0 +1,12 @@
+{
+ "zona": "Europe/Madrid",
+ "horas_subida": [12, 16],
+ "max_por_dia": 2,
+ "preparados_max": 3,
+ "privacidad": "private",
+ "horas_estadisticas": 6,
+ "voz": "kokoro",
+ "voz_kokoro": "em_alex",
+ "voz_piper": "es_ES-davefx-medium",
+ "voz_piper_hablante": null
+}

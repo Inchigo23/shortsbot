@@ -1,0 +1,13 @@
+# Nunca subir: permisos, claves y datos de tu PC
+client_secret.json
+datos/
+/config.json
+.venv/
+.claude/
+shorts/
+entrada/
+guiones/
+trabajo/
+__pycache__/
+*.pyc
+*.log

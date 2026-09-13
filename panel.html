@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#060a18">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ShortsBot">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icono-192.png">
+<link rel="apple-touch-icon" href="/icono-192.png">
+<title>ShortsBot · Centro de control</title>
+<style>
+  :root {
+    --fondo: #060a18; --cristal: rgba(13, 21, 46, .72); --cristal2: rgba(22, 33, 68, .8);
+    --borde: rgba(120, 170, 255, .16); --borde2: rgba(120, 170, 255, .3);
+    --texto: #e8eeff; --suave: #8796bd; --cian: #5ef2ff; --verde: #4ade80; --azul: #60a5fa;
+    --ambar: #fbbf24; --rojo: #fb7185; --morado: #b388ff; --radio: 16px;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html { background: var(--fondo); }
+  body { margin: 0; color: var(--texto); min-height: 100vh;
+         font: 14.5px/1.45 "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+         background: radial-gradient(1200px 700px at 50% 30%, #13204a 0%, #0a1230 45%, var(--fondo) 100%) fixed; }
+  main { max-width: 1440px; margin: 0 auto; padding: 16px 18px 60px; }
+  h2 { font-size: 11.5px; text-transform: uppercase; letter-spacing: .16em; color: var(--suave); margin: 0 0 10px; font-weight: 700; }
+  .cristal { background: var(--cristal); border: 1px solid var(--borde); border-radius: var(--radio);
+             backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+
+  /* Barra superior */
+  .sup { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin-bottom: 14px; }
+  .marca { font-weight: 800; letter-spacing: .14em; font-size: 15px; }
+  .marca b { color: var(--cian); }
+  .marca span { color: var(--suave); font-weight: 600; letter-spacing: .1em; }
+  .pastillas { display: flex; flex-wrap: wrap; gap: 8px; margin-left: auto; }
+  .pastilla { display: inline-flex; align-items: center; gap: 7px; padding: 5px 11px; border-radius: 99px; font-size: 12.5px;
+              background: var(--cristal); border: 1px solid var(--borde); white-space: nowrap; }
+  .pastilla b { font-variant-numeric: tabular-nums; }
+  .pastilla i { width: 7px; height: 7px; border-radius: 50%; background: var(--suave); }
+  .pastilla.ok i { background: var(--verde); box-shadow: 0 0 8px var(--verde); }
+  .pastilla.mal i { background: var(--rojo); box-shadow: 0 0 8px var(--rojo); }
+  .pastilla.medio i { background: var(--ambar); }
+
+  /* Escena: parrilla | órbita | registro */
+  .escena { display: grid; grid-template-columns: minmax(250px, 310px) 1fr minmax(250px, 310px); gap: 16px; align-items: stretch; }
+  .lateral { padding: 16px; display: flex; flex-direction: column; min-height: 0; max-height: 74vh; }
+  .lista { overflow: auto; margin: 0 -8px; padding: 0 8px; flex: 1; }
+
+  .centro { position: relative; display: flex; flex-direction: column; min-width: 0; }
+  .estado { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 12px 16px; --c: var(--azul); }
+  .estado .punto { width: 14px; height: 14px; border-radius: 50%; background: var(--c); box-shadow: 0 0 14px var(--c); }
+  .estado.vivo .punto { animation: parpadeo 1.2s ease-in-out infinite; }
+  @keyframes parpadeo { 50% { opacity: .35; } }
+  .estado .pregunta { font-size: 11.5px; color: var(--suave); text-transform: uppercase; letter-spacing: .12em; }
+  .estado .respuesta { font-size: 20px; font-weight: 800; line-height: 1.2; }
+  .estado .respuesta b { color: var(--c); }
+  .estado .detalle { color: var(--texto); opacity: .8; font-size: 13.5px; }
+  .estado .pct { font-size: 22px; font-weight: 800; color: var(--c); font-variant-numeric: tabular-nums; }
+  .barra { grid-column: 1 / -1; height: 5px; border-radius: 99px; background: rgba(255,255,255,.07); overflow: hidden; }
+  .barra i { display: block; height: 100%; width: 0; background: var(--c); box-shadow: 0 0 10px var(--c); transition: width .6s; }
+
+  .mapa-caja { position: relative; flex: 1; display: grid; place-items: center; min-height: 0; }
+  #mapa { width: 100%; max-height: 62vh; aspect-ratio: 1; display: block; overflow: visible; }
+  #mapa text { font-family: "Segoe UI", system-ui, sans-serif; }
+  .anillo { fill: none; stroke: rgba(120, 170, 255, .13); }
+  .radio { stroke: rgba(120, 170, 255, .12); stroke-width: 1; transition: stroke .5s; }
+  .radio.activo { stroke: rgba(94, 242, 255, .55); stroke-width: 1.6; }
+  .estrella { fill: #fff; }
+  .titila { animation: titila 3s ease-in-out infinite; }
+  @keyframes titila { 50% { opacity: .15; } }
+  #haz { transform-box: view-box; transform-origin: 0 0; transition: transform .9s cubic-bezier(.6, 0, .2, 1), opacity .5s; }
+  .gira { animation: gira 9s linear infinite; transform-box: fill-box; transform-origin: center; }
+  .gira.lento { animation-duration: 16s; animation-direction: reverse; }
+  @keyframes gira { to { transform: rotate(360deg); } }
+  #nucleo-brillo { transition: opacity .6s; }
+  .nodo { cursor: pointer; transition: opacity .5s; }
+  .nodo .halo { opacity: .28; transition: opacity .5s; }
+  .nodo.activo .halo { opacity: .95; }
+  .nodo .onda { opacity: 0; fill: none; stroke-width: 2; }
+  .nodo.activo .onda { animation: onda 1.6s ease-out infinite; }
+  @keyframes onda { from { opacity: .9; r: 26; } to { opacity: 0; r: 52; } }
+  .nodo.reposo { opacity: .5; }
+  .nodo:hover { opacity: 1; }
+  .nodo .nombre { fill: #fff; font-size: 13px; font-weight: 700; text-anchor: middle; }
+  .nodo .situacion { fill: var(--suave); font-size: 10.5px; text-anchor: middle; }
+  .nodo.activo .situacion { fill: var(--cian); font-weight: 700; }
+
+  #ficha { position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); width: min(360px, 92%); padding: 14px 16px; z-index: 3; }
+  #ficha .cab { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  #ficha .ico { font-size: 22px; }
+  #ficha .nom { font-weight: 800; font-size: 16px; }
+  #ficha .rol { color: var(--suave); font-size: 12.5px; }
+  #ficha .nota { margin: 8px 0 4px; }
+  #ficha .meta { color: var(--suave); font-size: 12px; }
+  #ficha button { position: absolute; top: 8px; right: 8px; padding: 2px 8px; }
+
+  /* Parrilla */
+  .emision { display: grid; grid-template-columns: 58px 1fr; gap: 10px; padding: 9px 8px; border-radius: 10px; cursor: pointer; }
+  .emision:hover { background: rgba(255,255,255,.04); }
+  .emision time { font-weight: 800; font-variant-numeric: tabular-nums; color: var(--cian); line-height: 1.15; }
+  .emision time small { display: block; color: var(--suave); font-weight: 600; font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em; }
+  .emision .t { font-weight: 600; font-size: 13px; line-height: 1.3; }
+  .emision .j { color: var(--suave); font-size: 11.5px; }
+  .ya { color: var(--ambar) !important; }
+  .resumen-parrilla { display: flex; gap: 8px; margin-bottom: 10px; }
+  .resumen-parrilla div { flex: 1; background: rgba(255,255,255,.04); border: 1px solid var(--borde); border-radius: 10px; padding: 7px 9px; }
+  .resumen-parrilla b { display: block; font-size: 18px; font-variant-numeric: tabular-nums; }
+  .resumen-parrilla span { font-size: 10.5px; color: var(--suave); text-transform: uppercase; letter-spacing: .08em; }
+
+  /* Registro */
+  .linea { display: grid; grid-template-columns: 42px 1fr; gap: 8px; padding: 6px 2px; font-size: 12.8px; border-bottom: 1px solid rgba(255,255,255,.04); }
+  .linea time { color: var(--suave); font-variant-numeric: tabular-nums; }
+  .linea.aviso span { color: var(--ambar); } .linea.error span { color: var(--rojo); }
+
+  /* Consola + rutinas */
+  .consola { margin-top: 16px; display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: start; }
+  .orden { display: flex; gap: 8px; padding: 8px 8px 8px 16px; align-items: center; }
+  .orden input { flex: 1; min-width: 0; background: none; border: 0; color: var(--texto); font: inherit; font-size: 15px; outline: none; }
+  .orden input::placeholder { color: var(--suave); }
+  .respuesta-nucleo { margin: 8px 4px 0; font-size: 13.5px; color: var(--texto); min-height: 1.2em; }
+  .respuesta-nucleo b { color: var(--cian); letter-spacing: .08em; font-size: 11.5px; }
+  .botones { display: flex; flex-wrap: wrap; gap: 8px; }
+  button, .boton { font: inherit; font-size: 13px; font-weight: 650; color: var(--texto); background: var(--cristal2);
+           border: 1px solid var(--borde); border-radius: 10px; padding: 8px 13px; cursor: pointer; text-decoration: none;
+           display: inline-flex; align-items: center; gap: 6px; }
+  button:hover, .boton:hover { border-color: var(--borde2); }
+  button.principal { background: linear-gradient(135deg, #22d3ee, #6366f1); border-color: transparent; color: #fff; }
+  button.enviar { background: var(--cian); color: #04121a; border: 0; border-radius: 10px; width: 38px; height: 38px; padding: 0; justify-content: center; font-size: 16px; }
+  button.peligro { color: var(--rojo); }
+
+  .rutinas { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin-top: 12px; }
+  .rutina { padding: 12px 14px; }
+  .rutina .n { font-weight: 750; font-size: 13.5px; }
+  .rutina .a { color: var(--suave); font-size: 11.5px; }
+  .rutina .x { font-size: 12.5px; opacity: .85; margin: 4px 0 6px; }
+  .rutina .p { font-size: 12.5px; color: var(--cian); font-weight: 700; font-variant-numeric: tabular-nums; }
+
+  /* Shorts */
+  .seccion { margin-top: 28px; }
+  .rejilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; }
+  .short { overflow: hidden; display: flex; flex-direction: column; }
+  .mini { position: relative; aspect-ratio: 9 / 16; max-height: 290px; background: #000; cursor: pointer; overflow: hidden; }
+  .mini img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .mini .play { position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; transition: opacity .2s; background: rgba(0,0,0,.35); font-size: 38px; }
+  .mini:hover .play { opacity: 1; }
+  .insignia { position: absolute; top: 9px; left: 9px; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 99px; background: rgba(0,0,0,.72); }
+  .insignia.subido { color: var(--verde); } .insignia.listo { color: var(--cian); } .insignia.subiendo { color: var(--ambar); }
+  .insignia.descartado { color: var(--suave); } .insignia.error { color: var(--rojo); }
+  .dur { position: absolute; bottom: 9px; right: 9px; font-size: 11.5px; background: rgba(0,0,0,.72); padding: 2px 7px; border-radius: 6px; }
+  .info { padding: 11px 13px 13px; display: flex; flex-direction: column; gap: 5px; flex: 1; }
+  .titulo { font-weight: 700; line-height: 1.3; font-size: 13.5px; }
+  .meta { color: var(--suave); font-size: 12px; }
+  .nota { font-size: 12px; color: var(--ambar); }
+  .nota.error { color: var(--rojo); }
+  .acciones { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; padding-top: 6px; }
+  .acciones button, .acciones .boton { padding: 5px 9px; font-size: 12px; }
+  .vacio { color: var(--suave); text-align: center; padding: 30px 16px; }
+
+  .pie { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 28px; }
+  .movil { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: center; padding: 16px; }
+  #qr { background: #fff; padding: 9px; border-radius: 12px; line-height: 0; width: max-content; }
+  .movil code { word-break: break-all; font-size: 11.5px; color: var(--suave); }
+  .aviso-privado { padding: 16px; border-color: rgba(251, 191, 36, .35); }
+  .aviso-privado b { color: var(--ambar); }
+
+  #modal { position: fixed; inset: 0; background: rgba(2, 5, 15, .88); display: grid; place-items: center; z-index: 10; padding: 20px; }
+  #modal video { max-height: 88vh; max-width: 100%; border-radius: 14px; background: #000; }
+  #toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); padding: 11px 16px; max-width: 92vw; z-index: 20;
+           box-shadow: 0 10px 30px rgba(0,0,0,.5); }
+
+  @media (max-width: 1100px) {
+    .escena { grid-template-columns: 1fr; }
+    .centro { order: -1; }
+    .lateral { max-height: 360px; }
+    .rutinas { grid-template-columns: repeat(2, 1fr); }
+    .pie { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    main { padding: 12px 12px 50px; }
+    .pastillas { margin-left: 0; }
+    .consola { grid-template-columns: 1fr; }
+    .estado .respuesta { font-size: 17px; }
+    #mapa { max-height: none; }
+    .rejilla { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .mini { max-height: none; }
+    .movil { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header class="sup">
+    <div class="marca"><b>SHORTS</b>BOT <span>· CENTRO DE CONTROL</span></div>
+    <button id="b-instalar" class="principal" hidden>⬇ Instalar app</button>
+    <div class="pastillas">
+      <span class="pastilla" id="p-yt"><i></i><span>YouTube</span></span>
+      <span class="pastilla" id="p-ia"><i></i><span>Títulos</span></span>
+      <span class="pastilla" id="p-gpu"><i></i><span>Gráfica</span></span>
+      <span class="pastilla"><span>Hoy</span> <b id="p-hoy">–</b></span>
+      <span class="pastilla"><span>Subidos</span> <b id="p-total">–</b></span>
+      <span class="pastilla"><span>Visitas</span> <b id="p-vistas">–</b></span>
+    </div>
+  </header>
+
+  <div class="escena">
+    <aside class="cristal lateral">
+      <h2>Parrilla de emisión</h2>
+      <div class="resumen-parrilla">
+        <div><b id="r-cola">–</b><span>Programados</span></div>
+        <div><b id="r-pend">–</b><span>Por hacer</span></div>
+        <div><b id="r-dia">–</b><span>Al día</span></div>
+      </div>
+      <div class="lista" id="parrilla"></div>
+    </aside>
+
+    <section class="centro">
+      <div class="cristal estado" id="estado">
+        <div class="punto"></div>
+        <div>
+          <div class="pregunta">¿Está trabajando?</div>
+          <div class="respuesta" id="respuesta">Conectando…</div>
+          <div class="detalle" id="detalle"></div>
+        </div>
+        <div class="pct" id="pct"></div>
+        <div class="barra" id="barra" hidden><i></i></div>
+      </div>
+      <div class="mapa-caja">
+        <svg id="mapa" viewBox="-330 -330 660 660" role="img" aria-label="Mapa de agentes">
+          <defs>
+            <radialGradient id="g-nucleo"><stop offset="0" stop-color="#fff"/><stop offset=".35" stop-color="#9ff8ff"/><stop offset="1" stop-color="#22d3ee" stop-opacity="0"/></radialGradient>
+            <linearGradient id="g-haz" x1="0" x2="1"><stop offset="0" stop-color="#9ff8ff" stop-opacity=".75"/><stop offset="1" stop-color="#5ef2ff" stop-opacity="0"/></linearGradient>
+          </defs>
+          <g id="estrellas"></g>
+          <circle class="anillo" r="110"/>
+          <circle class="anillo" r="178" stroke-dasharray="2 6"/>
+          <circle class="anillo" r="235"/>
+          <circle class="anillo" r="300" stroke-dasharray="1 9"/>
+          <g id="radios"></g>
+          <g id="haz" opacity="0"><polygon points="0,-5 250,-46 250,46 0,5" fill="url(#g-haz)"/></g>
+          <g id="nucleo">
+            <circle id="nucleo-brillo" r="70" fill="url(#g-nucleo)" opacity=".45"/>
+            <g transform="rotate(28)"><ellipse class="gira" rx="46" ry="15" fill="none" stroke="#8ff6ff" stroke-width="1.6" opacity=".8"/></g>
+            <g transform="rotate(-32)"><ellipse class="gira lento" rx="46" ry="15" fill="none" stroke="#8ff6ff" stroke-width="1.6" opacity=".8"/></g>
+            <circle r="24" fill="#bff9ff" id="nucleo-bola"/>
+            <text y="4" text-anchor="middle" font-size="8.5" font-weight="800" fill="#063444" letter-spacing="1.2">NÚCLEO</text>
+          </g>
+          <g id="nodos"></g>
+        </svg>
+        <div class="cristal" id="ficha" hidden></div>
+      </div>
+    </section>
+
+    <aside class="cristal lateral">
+      <h2>Registro de misión</h2>
+      <div class="lista" id="log"></div>
+    </aside>
+  </div>
+
+  <div class="consola">
+    <div>
+      <form class="cristal orden" id="form-orden" autocomplete="off">
+        <input id="orden" placeholder="Dile algo al Núcleo: «¿qué haces?», «sube el siguiente», «pausa»…">
+        <button class="enviar" title="Enviar">➤</button>
+      </form>
+      <div class="respuesta-nucleo" id="resp-nucleo"></div>
+    </div>
+    <div class="botones">
+      <button id="b-conectar" class="principal" hidden onclick="accion('conectar_youtube')">Conectar YouTube</button>
+      <button id="b-jugando" hidden onclick="accion('ignorar_juego')" title="Durante 1 hora">🎮 Trabaja aunque juegue</button>
+      <button id="b-pausa" onclick="accion(this.dataset.a)">Pausar</button>
+      <button onclick="accion('buscar')">Buscar clips</button>
+    </div>
+  </div>
+  <div class="rutinas" id="rutinas"></div>
+
+  <section class="seccion">
+    <h2>Shorts</h2>
+    <div class="rejilla" id="shorts"></div>
+  </section>
+
+  <div class="pie">
+    <div id="bloque-movil" hidden>
+      <h2>Míralo desde el móvil</h2>
+      <div class="cristal movil">
+        <div id="qr"></div>
+        <div>
+          <p style="margin-top:0">Escanéalo con la cámara del móvil (en la <b>misma Wi-Fi</b> que el PC). Se queda guardado;
+            puedes añadirlo a la pantalla de inicio.</p>
+          <code id="url-movil"></code>
+          <p class="meta">Carpetas vigiladas: <span id="carpetas"></span></p>
+        </div>
+      </div>
+    </div>
+    <div id="bloque-privado" hidden>
+      <h2>Importante</h2>
+      <div class="cristal aviso-privado">
+        <b>Los Shorts se suben en privado.</b> Google bloquea en privado lo que suben las apps que aún no ha verificado.
+        Cuando te aprueben (mira <i>LEEME.md</i>), pon <code>"privacidad": "public"</code> en <i>config.json</i>.
+        Mientras tanto tienes cada Short en <i>ShortsBot\shorts</i>.
+      </div>
+    </div>
+  </div>
+</main>
+
+<div id="modal" hidden onclick="cerrarVideo(event)"><video id="video" controls playsinline loop></video></div>
+<div id="toast" class="cristal" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const $ = (id) => document.getElementById(id);
+const SVG = "http://www.w3.org/2000/svg";
+const R = 228;
+
+const AGENTES = [
+  { id: "rastreador",   nombre: "Rastreador",   icono: "🔭", color: "#38d9ff", rol: "Busca clips nuevos en tus carpetas",      dato: (d) => `${d.fuentes_total} clips encontrados` },
+  { id: "vigia",        nombre: "Vigía",        icono: "🎮", color: "#b388ff", rol: "Si estás jugando, para a todos",           dato: () => "Protege tus FPS" },
+  { id: "analista",     nombre: "Analista",     icono: "📈", color: "#4ade80", rol: "Elige el momento con más acción",          dato: (d) => `${d.shorts.length} momentos elegidos` },
+  { id: "guionista",    nombre: "Guionista",    icono: "✍️", color: "#fbbf24", rol: "Recibe los guiones que escribe Claude",     dato: (d) => `${d.guiones_pendientes} guion(es) esperando` },
+  { id: "narrador",     nombre: "Narrador",     icono: "🎙️", color: "#e879f9", rol: "Pone voz al guion (voz neural, sin internet)", dato: (d) => `${d.hechos_estudio} vídeos narrados` },
+  { id: "animador",     nombre: "Animador",     icono: "🧱", color: "#a3e635", rol: "Genera un mundo de bloques único para cada vídeo", dato: (d) => `${d.hechos_estudio} mundos creados` },
+  { id: "montador",     nombre: "Montador",     icono: "🎬", color: "#fb7185", rol: "Edita el Short en vertical 1080×1920",     dato: (d) => d.bot.encoder === "h264_nvenc" ? "Usa tu gráfica NVIDIA" : "Usa el procesador" },
+  { id: "planificador", nombre: "Planificador", icono: "🗓️", color: "#fb923c", rol: "Decide a qué hora sale cada Short",       dato: (d) => `${d.parrilla.length} en parrilla` },
+  { id: "mensajero",    nombre: "Mensajero",    icono: "🚀", color: "#818cf8", rol: "Sube los Shorts a YouTube",                dato: (d) => `${d.subidos_total} subidos` },
+  { id: "estadista",    nombre: "Estadista",    icono: "📊", color: "#2dd4bf", rol: "Lee las visitas de tu canal",              dato: (d) => `${d.vistas_total} visitas` },
+];
+const FASES = {
+  editando:   { c: "var(--verde)",  r: "Sí, <b>trabajando</b>", vivo: true },
+  subiendo:   { c: "var(--verde)",  r: "Sí, <b>subiendo a YouTube</b>", vivo: true },
+  arrancando: { c: "var(--cian)",   r: "Sí, <b>arrancando</b>", vivo: true },
+  esperando:  { c: "var(--azul)",   r: "Encendido, <b>en espera</b>" },
+  jugando:    { c: "var(--morado)", r: "Encendido, <b>esperando a que acabes de jugar</b>" },
+  pausado:    { c: "var(--ambar)",  r: "No, <b>en pausa</b>" },
+  error:      { c: "var(--rojo)",   r: "Hay un <b>problema</b>" },
+};
+const ESTADOS = { listo: "En parrilla", subiendo: "Subiendo", subido: "En YouTube", descartado: "Descartado", error: "Error" };
+let datos = null, ultimoListado = "", ultimaParrilla = "", qrHecho = false, anguloHaz = null, fichaAbierta = null;
+
+const esc = (t) => String(t ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const hora = (t) => new Date(t * 1000).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
+function hace(t) {
+  if (!t) return "nunca";
+  const s = Date.now() / 1000 - t;
+  if (s < 60) return "ahora";
+  if (s < 3600) return `hace ${Math.floor(s / 60)} min`;
+  if (s < 86400) return `hace ${Math.floor(s / 3600)} h`;
+  return new Date(t * 1000).toLocaleDateString("es-ES", { day: "numeric", month: "short" });
+}
+function falta(t) {
+  if (!t) return "—";
+  const s = Math.round(t - Date.now() / 1000);
+  if (s <= 0) return "ahora";
+  const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), ss = s % 60;
+  return h ? `en ${h} h ${String(m).padStart(2, "0")} min` : m ? `en ${m} min ${String(ss).padStart(2, "0")} s` : `en ${ss} s`;
+}
+function dia(t) {
+  const d = new Date(t * 1000), hoy = new Date(), man = new Date(Date.now() + 864e5);
+  if (d.toDateString() === hoy.toDateString()) return "hoy";
+  if (d.toDateString() === man.toDateString()) return "mañana";
+  return d.toLocaleDateString("es-ES", { weekday: "short", day: "numeric" });
+}
+const el = (tag, attrs = {}) => { const e = document.createElementNS(SVG, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
+
+/* ---------- Mapa de agentes ---------- */
+function construirMapa() {
+  const estrellas = $("estrellas");
+  for (let i = 0; i < 110; i++) {
+    const a = Math.random() * Math.PI * 2, r = 40 + Math.random() * 300;
+    const c = el("circle", { cx: (Math.cos(a) * r).toFixed(1), cy: (Math.sin(a) * r).toFixed(1), r: (Math.random() * 1.3 + .3).toFixed(2), class: "estrella" + (i % 4 === 0 ? " titila" : "") });
+    c.style.opacity = (Math.random() * .6 + .15).toFixed(2);
+    c.style.animationDelay = (Math.random() * 3).toFixed(2) + "s";
+    estrellas.appendChild(c);
+  }
+  const defs = document.querySelector("#mapa defs");
+  AGENTES.forEach((a, i) => {
+    a.angulo = -90 + i * (360 / AGENTES.length);
+    const rad = a.angulo * Math.PI / 180;
+    a.x = Math.cos(rad) * R; a.y = Math.sin(rad) * R;
+    const g = el("radialGradient", { id: "g-" + a.id });
+    g.append(el("stop", { offset: "0", "stop-color": a.color, "stop-opacity": ".85" }), el("stop", { offset: "1", "stop-color": a.color, "stop-opacity": "0" }));
+    defs.appendChild(g);
+    $("radios").appendChild(el("line", { x1: 0, y1: 0, x2: a.x.toFixed(1), y2: a.y.toFixed(1), class: "radio", id: "radio-" + a.id }));
+
+    const n = el("g", { class: "nodo reposo", id: "nodo-" + a.id, transform: `translate(${a.x.toFixed(1)} ${a.y.toFixed(1)})`, tabindex: 0 });
+    const hex = [...Array(6)].map((_, k) => { const t = (60 * k - 90) * Math.PI / 180; return `${(Math.cos(t) * 25).toFixed(1)},${(Math.sin(t) * 25).toFixed(1)}`; }).join(" ");
+    n.append(
+      el("circle", { r: 50, fill: `url(#g-${a.id})`, class: "halo" }),
+      el("circle", { r: 26, stroke: a.color, class: "onda" }),
+      el("polygon", { points: hex, fill: a.color, "fill-opacity": ".92", stroke: "#fff", "stroke-opacity": ".55", "stroke-width": 1.4 }),
+    );
+    const ico = el("text", { y: 7, "text-anchor": "middle", "font-size": 19 }); ico.textContent = a.icono;
+    const nom = el("text", { y: 46, class: "nombre" }); nom.textContent = a.nombre;
+    const sit = el("text", { y: 61, class: "situacion", id: "sit-" + a.id }); sit.textContent = "reposo";
+    const tit = el("title"); tit.textContent = a.rol;
+    n.append(ico, nom, sit, tit);
+    n.addEventListener("click", (e) => { e.stopPropagation(); abrirFicha(a.id); });
+    $("nodos").appendChild(n);
+  });
+}
+
+function apuntarHaz(grados) {
+  if (anguloHaz === null) anguloHaz = grados;
+  else anguloHaz += ((grados - anguloHaz) % 360 + 540) % 360 - 180;
+  $("haz").style.transform = `rotate(${anguloHaz}deg)`;
+}
+
+function pintarMapa(d, colorFase) {
+  const activo = d.bot.agente;
+  AGENTES.forEach((a) => {
+    const info = d.bot.agentes[a.id] || {};
+    const reciente = info.ultimo && Date.now() / 1000 - info.ultimo < 600;
+    const n = $("nodo-" + a.id);
+    n.classList.toggle("activo", a.id === activo);
+    n.classList.toggle("reposo", a.id !== activo && !reciente);
+    $("radio-" + a.id).classList.toggle("activo", a.id === activo);
+    $("sit-" + a.id).textContent = a.id === activo ? "● trabajando" : info.ultimo ? `reposo · ${hace(info.ultimo)}` : "reposo";
+  });
+  const ag = AGENTES.find((a) => a.id === activo);
+  $("haz").setAttribute("opacity", ag ? "1" : "0");
+  if (ag) apuntarHaz(ag.angulo);
+  $("nucleo-brillo").setAttribute("opacity", ag ? ".95" : ".4");
+  $("nucleo-bola").setAttribute("fill", colorFase);
+  if (fichaAbierta) abrirFicha(fichaAbierta, true);
+}
+
+function abrirFicha(id, refresco) {
+  if (!datos) return;
+  const a = AGENTES.find((x) => x.id === id);
+  const info = datos.bot.agentes[id] || {};
+  const trabajando = datos.bot.agente === id;
+  fichaAbierta = id;
+  const f = $("ficha");
+  f.innerHTML = `<button onclick="cerrarFicha()">✕</button>
+    <div class="cab"><span class="ico">${a.icono}</span><div><div class="nom" style="color:${a.color}">${a.nombre}</div><div class="rol">${esc(a.rol)}</div></div></div>
+    <div class="nota">${trabajando ? "🟢 " : ""}${esc(info.nota || "Todavía no ha hecho nada.")}</div>
+    <div class="meta">${trabajando ? "Trabajando ahora" : "Última actividad: " + hace(info.ultimo)} · ${esc(a.dato(datos))}</div>`;
+  if (!refresco) f.hidden = false;
+}
+function cerrarFicha() { fichaAbierta = null; $("ficha").hidden = true; }
+document.addEventListener("click", (e) => { if (fichaAbierta && !$("ficha").contains(e.target)) cerrarFicha(); });
+
+/* ---------- Resto del panel ---------- */
+function pastilla(id, texto, tipo) { const p = $(id); p.className = "pastilla " + (tipo || ""); p.lastElementChild.textContent = texto; }
+
+function pintarEstado(d) {
+  const b = d.bot, caja = $("estado");
+  let fase = b.fase, detalle = b.detalle, resp = null;
+  if (d.ahora - b.latido > 120) { fase = "error"; detalle = "Hace más de 2 minutos que no da señales. Reinícialo con ShortsBot.bat"; resp = "No <b>responde</b>"; }
+  const f = FASES[fase] || FASES.error;
+  const ag = AGENTES.find((a) => a.id === b.agente);
+  caja.style.setProperty("--c", f.c);
+  caja.classList.toggle("vivo", !!f.vivo);
+  $("respuesta").innerHTML = resp || f.r;
+  $("detalle").textContent = ag && b.agentes[ag.id] && fase !== "error" ? `${ag.icono} ${ag.nombre}: ${b.agentes[ag.id].nota}` : detalle;
+  const barra = b.progreso !== null && b.progreso !== undefined && f.vivo;
+  $("barra").hidden = !barra;
+  $("pct").textContent = barra ? b.progreso + "%" : "";
+  if (barra) $("barra").firstElementChild.style.width = b.progreso + "%";
+  return COLOR_NUCLEO[f.c] || "#bff9ff";
+}
+const COLOR_NUCLEO = { "var(--verde)": "#a7f3d0", "var(--azul)": "#bff9ff", "var(--cian)": "#bff9ff",
+                       "var(--morado)": "#ddd0ff", "var(--ambar)": "#fde68a", "var(--rojo)": "#fecdd3" };
+
+function pintarParrilla(d) {
+  $("r-cola").textContent = d.parrilla.length;
+  $("r-pend").textContent = d.pendientes + d.guiones_pendientes;
+  $("r-dia").textContent = d.max_dia;
+  const clave = JSON.stringify(d.parrilla) + !!d.bot.youtube;
+  if (clave === ultimaParrilla) return;
+  ultimaParrilla = clave;
+  const aviso = !d.bot.youtube && d.parrilla.length ? `<div class="meta" style="padding:4px 8px 8px">⚠️ Las horas son orientativas: falta conectar YouTube.</div>` : "";
+  $("parrilla").innerHTML = aviso + (d.parrilla.map((p) => `
+    <div class="emision" onclick="verVideo('${p.id}')" title="Ver el Short">
+      <time class="${p.forzar ? "ya" : ""}">${p.forzar ? "YA" : hora(p.cuando)}<small>${p.forzar ? "forzado" : dia(p.cuando)}</small></time>
+      <div><div class="t">${esc(p.titulo)}</div><div class="j">${esc(p.juego)}</div></div>
+    </div>`).join("") || `<div class="vacio">Nada programado.<br>Guarda un clip con <b>Alt+F10</b>.</div>`);
+}
+
+function pintarRutinas(d) {
+  $("rutinas").innerHTML = d.rutinas.map((r) => `
+    <div class="cristal rutina">
+      <div class="n">${esc(r.nombre)}</div>
+      <div class="a">${esc(r.agentes)}</div>
+      <div class="x">${esc(r.texto)}</div>
+      <div class="p" data-proxima="${r.proxima ?? ""}">${r.proxima ? "próxima " + falta(r.proxima) : "sin programar"}</div>
+    </div>`).join("");
+}
+function tic() {
+  document.querySelectorAll("[data-proxima]").forEach((e) => { const t = parseFloat(e.dataset.proxima); if (t) e.textContent = "próxima " + falta(t); });
+}
+
+function tarjetaShort(s, local) {
+  const b = [];
+  if (s.estado === "listo") b.push(`<button onclick="accion('subir_ahora','${s.id}')">Subir ahora</button>`, `<button class="peligro" onclick="accion('descartar','${s.id}')">Descartar</button>`);
+  if (s.estado === "descartado") b.push(`<button onclick="accion('recuperar','${s.id}')">Recuperar</button>`, `<button onclick="accion('subir_ahora','${s.id}')">Subir igualmente</button>`);
+  if (s.estado === "error") b.push(`<button onclick="accion('subir_ahora','${s.id}')">Reintentar</button>`, `<button class="peligro" onclick="accion('descartar','${s.id}')">Descartar</button>`);
+  if (s.estado === "subido") {
+    b.push(`<a class="boton" target="_blank" rel="noopener" href="https://studio.youtube.com/video/${s.youtube_id}/edit">Ver en YouTube</a>`);
+    if (s.privacidad !== "public") b.push(`<button onclick="accion('publicar','${s.id}')">Publicar</button>`);
+  }
+  if (local && !s.borrado) b.push(`<button onclick="accion('mostrar','${s.id}')" title="Abrir en el Explorador">📁</button>`);
+  let nota = "";
+  if (s.estado === "descartado") nota = `<div class="nota">${esc(s.motivo)}</div>`;
+  if (s.estado === "error") nota = `<div class="nota error">${esc(s.error)}</div>`;
+  if (s.estado === "subiendo") nota = `<div class="nota">Subiendo… ${s.progreso ?? 0}%</div>`;
+  const vistas = s.vistas !== undefined ? ` · ${s.vistas} visitas` : "";
+  const cuando = s.subido_en ? `subido ${hace(s.subido_en)}${s.privacidad ? " · " + (s.privacidad === "public" ? "público" : "privado") : ""}${vistas}` : `montado ${hace(s.creado)}`;
+  return `<article class="cristal short">
+    <div class="mini" onclick="${s.borrado && s.youtube_id ? `window.open('https://studio.youtube.com/video/${s.youtube_id}/edit')` : `verVideo('${s.id}')`}" title="${s.borrado ? "Ya está solo en YouTube" : "Ver el Short"}">
+      <img loading="lazy" src="/media/${s.id}.jpg" alt="">
+      <span class="insignia ${s.estado}">${ESTADOS[s.estado] || s.estado}</span>
+      <span class="dur">${Math.round(s.duracion)} s</span>
+      <span class="play">▶</span>
+    </div>
+    <div class="info">
+      <div class="titulo">${esc(s.titulo)}</div>
+      <div class="meta">${esc(s.juego)} · ${cuando} · ${s.autor === "claude" ? "título de Claude" : "título automático"}</div>
+      ${nota}
+      <div class="acciones">${b.join("")}</div>
+    </div>
+  </article>`;
+}
+
+async function refrescar() {
+  let d;
+  try {
+    const r = await fetch("/api/estado", { cache: "no-store" });
+    if (!r.ok) throw new Error(r.status);
+    d = await r.json();
+  } catch {
+    const caja = $("estado");
+    caja.style.setProperty("--c", "var(--rojo)"); caja.classList.remove("vivo");
+    $("respuesta").innerHTML = "No, <b>está apagado</b>";
+    $("detalle").textContent = "El bot está apagado o el PC no está disponible. Enciéndelo con ShortsBot.bat";
+    $("barra").hidden = true; $("pct").textContent = "";
+    if (datos) pintarMapa({ ...datos, bot: { ...datos.bot, agente: null } }, "#fb7185");
+    return;
+  }
+  datos = d;
+  const b = d.bot;
+  pintarMapa(d, pintarEstado(d));
+  pintarParrilla(d);
+  pintarRutinas(d);
+
+  pastilla("p-yt", b.youtube ? `YouTube: ${b.youtube}` : "YouTube sin conectar", b.youtube ? "ok" : "mal");
+  pastilla("p-ia", b.titulos === "claude" ? "Títulos: Claude" : "Títulos: plantillas", b.titulos === "claude" ? "ok" : "medio");
+  pastilla("p-gpu", b.encoder === "h264_nvenc" ? "NVIDIA" : b.encoder ? "Procesador" : "Gráfica…", b.encoder === "h264_nvenc" ? "ok" : "medio");
+  $("p-hoy").textContent = `${d.subidos_hoy}/${d.max_dia}`;
+  $("p-total").textContent = d.subidos_total;
+  $("p-vistas").textContent = d.vistas_total.toLocaleString("es-ES");
+  $("b-conectar").hidden = !!b.youtube || !d.local;
+  $("b-jugando").hidden = b.fase !== "jugando";
+  $("b-pausa").textContent = b.pausado ? "Reanudar" : "Pausar";
+  $("b-pausa").dataset.a = b.pausado ? "reanudar" : "pausar";
+
+  const listado = JSON.stringify(d.shorts);
+  if (listado !== ultimoListado) {
+    ultimoListado = listado;
+    $("shorts").innerHTML = d.shorts.length
+      ? d.shorts.map((s) => tarjetaShort(s, d.local)).join("")
+      : `<div class="cristal vacio" style="grid-column:1/-1">Aún no hay Shorts. Guarda un clip mientras juegas con <b>Alt+F10</b> (NVIDIA) o mete un vídeo en <i>ShortsBot\\entrada</i>.</div>`;
+  }
+  $("log").innerHTML = d.log.map((l) => `<div class="linea ${l.nivel}"><time>${hora(l.t)}</time><span>${esc(l.msg)}</span></div>`).join("")
+    || `<div class="meta">Sin actividad todavía</div>`;
+
+  $("bloque-privado").hidden = d.privacidad === "public";
+  if (d.local && d.url_movil) {
+    $("bloque-movil").hidden = false;
+    $("url-movil").textContent = d.url_movil;
+    $("carpetas").textContent = d.carpetas.join(" · ");
+    if (!qrHecho && window.QRCode) { new QRCode($("qr"), { text: d.url_movil, width: 132, height: 132 }); qrHecho = true; }
+  }
+}
+
+async function accion(nombre, id) {
+  try {
+    const r = await fetch("/api/accion", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ accion: nombre, id }) });
+    aviso((await r.json()).mensaje);
+  } catch { aviso("No se ha podido contactar con el bot."); }
+  refrescar();
+}
+
+$("form-orden").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const texto = $("orden").value.trim();
+  if (!texto) return;
+  $("resp-nucleo").innerHTML = `<b>NÚCLEO</b> · …`;
+  try {
+    const r = await fetch("/api/orden", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ texto }) });
+    $("resp-nucleo").innerHTML = `<b>NÚCLEO</b> · ${esc((await r.json()).mensaje)}`;
+    $("orden").value = "";
+  } catch { $("resp-nucleo").innerHTML = `<b>NÚCLEO</b> · No me llega la señal: ¿está encendido el bot?`; }
+  refrescar();
+});
+
+let temporizador;
+function aviso(texto) {
+  const t = $("toast");
+  t.textContent = texto; t.hidden = false;
+  clearTimeout(temporizador);
+  temporizador = setTimeout(() => (t.hidden = true), 4500);
+}
+function verVideo(id) {
+  const v = $("video");
+  v.src = `/media/${id}.mp4`;
+  $("modal").hidden = false;
+  v.play().catch(() => {});
+}
+function cerrarVideo(e) {
+  if (e.target.id !== "modal") return;
+  const v = $("video");
+  v.pause(); v.removeAttribute("src"); v.load();
+  $("modal").hidden = true;
+}
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") { if (!$("modal").hidden) cerrarVideo({ target: $("modal") }); cerrarFicha(); } });
+
+/* ---------- App instalable ---------- */
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js").catch(() => {});
+let avisoInstalar = null;
+window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); avisoInstalar = e; $("b-instalar").hidden = false; });
+window.addEventListener("appinstalled", () => { $("b-instalar").hidden = true; aviso("¡App instalada! Ya la tienes con su icono."); });
+$("b-instalar").addEventListener("click", async () => {
+  if (!avisoInstalar) return;
+  avisoInstalar.prompt();
+  await avisoInstalar.userChoice;
+  avisoInstalar = null;
+  $("b-instalar").hidden = true;
+});
+
+construirMapa();
+refrescar();
+setInterval(refrescar, 2000);
+setInterval(tic, 1000);
+</script>
+</body>
+</html>

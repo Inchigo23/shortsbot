@@ -1,0 +1,11 @@
+numpy
+pillow
+moderngl
+imageio-ffmpeg
+kokoro-onnx
+piper-tts
+google-api-python-client
+google-auth
+google-auth-oauthlib
+requests
+tzdata
