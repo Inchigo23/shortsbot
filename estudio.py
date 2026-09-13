@@ -21,6 +21,7 @@ from pathlib import Path
 import animacion
 import editor
 import estado
+import ilustraciones
 import voz
 
 BASE = Path(__file__).resolve().parent
@@ -126,13 +127,58 @@ def crear_ass(tiempos, gancho, duracion, ruta):
     Path(ruta).write_text("\n".join(lineas) + "\n", encoding="utf-8")
 
 
+# ------------------------------------------------------------- ilustraciones
+
+def tramos_frases(frases, tiempos):
+    """(inicio, fin) de cada frase, sacado de los tiempos de sus palabras."""
+    tramos, i = [], 0
+    for f in frases:
+        n = len(f.split())
+        if n:
+            tramos.append((tiempos[i][1], tiempos[i + n - 1][2]))
+        else:
+            tramos.append(None)
+        i += n
+    return tramos
+
+
+def preparar_iconos(g, tiempos, duracion, carpeta):
+    """[(png, desde, hasta), ...]: una ilustración propia por frase, que dura hasta que empieza la siguiente."""
+    nombres = ilustraciones.para_guion(g)
+    tramos = [t for t in tramos_frases(g["narracion"], tiempos)]
+    salida = []
+    for k, (nombre, tramo) in enumerate(zip(nombres, tramos)):
+        if not nombre or not tramo:
+            continue
+        siguiente = next((t[0] for t in tramos[k + 1:] if t), duracion)
+        png = Path(carpeta) / f"icono-{nombre}.png"
+        if not png.exists():
+            ilustraciones.dibujar(nombre, png)
+        desde, hasta = max(0.0, tramo[0] - 0.05), float(min(duracion, max(siguiente, tramo[1] + 0.3)))
+        if salida and salida[-1][0] == png and desde - salida[-1][2] < 0.5:
+            salida[-1] = (png, salida[-1][1], hasta)  # misma ilustración seguida: se queda fija, sin parpadear
+        else:
+            salida.append((png, float(desde), hasta))
+    return salida
+
+
 # ------------------------------------------------------------- montaje
 
-def montar(fondo, audio, ass, salida, duracion, encoder, progreso=None):
-    """Junta animación + voz + subtítulos. Rutas relativas a BASE (el filtro ass no quiere «C:»)."""
+def montar(fondo, audio, ass, salida, duracion, encoder, progreso=None, iconos=None):
+    """Junta animación + ilustraciones + voz + subtítulos. Rutas relativas a BASE (el filtro ass no quiere «C:»)."""
     rel = lambda p: Path(p).resolve().relative_to(BASE).as_posix()  # noqa: E731
-    grafo = (f"[0:v]ass={rel(ass)}:fontsdir={rel(FUENTES)}[v];"
-             f"[1:a]loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000,apad[a]")
+    iconos = iconos or []
+    entradas_iconos, grafo, previo = [], "", "0:v"
+    for k, (png, desde, hasta) in enumerate(iconos):
+        entradas_iconos += ["-loop", "1", "-framerate", "30", "-t", f"{duracion:.2f}", "-i", rel(png)]
+        fin_fundido = max(desde, hasta - 0.2)
+        grafo += (f"[{2 + k}:v]format=rgba,fade=t=in:st={desde:.2f}:d=0.2:alpha=1,"
+                  f"fade=t=out:st={fin_fundido:.2f}:d=0.2:alpha=1[i{k}];"
+                  f"[{previo}][i{k}]overlay=x=(W-w)/2:y='560+70*max(0,1-(t-{desde:.2f})/0.25)'"
+                  f":enable='between(t,{desde:.2f},{hasta:.2f})'[v{k}];")
+        previo = f"v{k}"
+    grafo += (f"[{previo}]ass={rel(ass)}:fontsdir={rel(FUENTES)}[v];"
+              f"[1:a]loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000,apad[a]")
 
     def ejecutar(enc):
         limite = ["-maxrate", "10M", "-bufsize", "20M"]  # ~10 Mbps: lo que recomienda YouTube para 1080p
@@ -140,7 +186,7 @@ def montar(fondo, audio, ass, salida, duracion, encoder, progreso=None):
                  if enc == "h264_nvenc" else ["-c:v", "libx264", "-preset", "veryfast", "-crf", "21", *limite])
         p = subprocess.Popen(
             [editor.FFMPEG, "-hide_banner", "-y", "-v", "error", "-i", rel(fondo), "-i", rel(audio),
-             "-filter_complex", grafo, "-map", "[v]", "-map", "[a]", *codec, "-profile:v", "high",
+             *entradas_iconos, "-filter_complex", grafo, "-map", "[v]", "-map", "[a]", *codec, "-profile:v", "high",
              "-c:a", "aac", "-b:a", "192k", "-ac", "2", "-t", f"{duracion:.2f}", "-movflags", "+faststart",
              "-progress", "pipe:1", "-nostats", rel(salida)],
             cwd=BASE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, creationflags=editor.SIN_VENTANA)
@@ -207,8 +253,10 @@ def producir(ruta, encoder, cfg):
     estado.fase("editando", f"Montando «{g['titulo']}»", 86)
     ass = TMP / f"{sid}.ass"
     crear_ass(tiempos, g["gancho"], duracion, ass)
+    iconos = preparar_iconos(g, tiempos, duracion, TMP)
     salida = SHORTS / f"{sid}.mp4"
-    montar(fondo, audio, ass, salida, duracion, encoder, progreso=lambda p: estado.bot(progreso=round(86 + p * 0.13)))
+    montar(fondo, audio, ass, salida, duracion, encoder, iconos=iconos,
+           progreso=lambda p: estado.bot(progreso=round(86 + p * 0.13)))
     mini = MINIS / f"{sid}.jpg"
     editor.fotograma(salida, min(2.0, duracion / 2), mini, ancho=360)
     for f in (audio, fondo, ass):

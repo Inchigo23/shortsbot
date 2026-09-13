@@ -276,8 +276,25 @@ def plan():
     if cambios_previas or any(p.get("asset_previa") for p in e["preparados"]):
         _actualizar_previas(e)
 
+    # «Rehacer» desde la app: se tira el vídeo preparado y su guion vuelve a la cola para hacerlo el primero
+    guion_primero = None
+    if accion.startswith("rehacer:"):
+        p = next((x for x in e["preparados"] if x["id"] == accion.split(":", 1)[1]), None)
+        if p:
+            _borrar_archivo(p.get("asset"))
+            e["preparados"].remove(p)
+            if p.get("guion") in e["guiones_usados"]:
+                e["guiones_usados"].remove(p["guion"])
+            guion_primero = p.get("guion")
+            _actualizar_previas(e)
+            log(e, f"Rehaciendo desde la app: «{p['titulo']}»")
+        accion = "producir"
+
     pausado = bool(ctrl.get("pausado"))
     pendientes = guiones_pendientes(e)
+    if guion_primero in pendientes:
+        pendientes.remove(guion_primero)
+        pendientes.insert(0, guion_primero)
     producir = bool(pendientes) and (accion == "producir" or (accion == "ciclo" and not pausado
                                                               and len(e["preparados"]) < cfg["preparados_max"]))
     subir = ""
@@ -358,7 +375,10 @@ def paso_montar():
     duracion = v["duracion"] + 0.7
     estudio.crear_ass(v["tiempos"], g["gancho"], duracion, trabajo("subtitulos.ass"))
     short, previa, mini = trabajo(f"{a['id']}.mp4"), trabajo(f"{a['id']}-previa.mp4"), trabajo("mini.jpg")
-    estudio.montar(trabajo("fondo.mp4"), trabajo("voz.wav"), trabajo("subtitulos.ass"), short, duracion, "libx264")
+    iconos = estudio.preparar_iconos(g, v["tiempos"], duracion, TRABAJO)
+    estudio.montar(trabajo("fondo.mp4"), trabajo("voz.wav"), trabajo("subtitulos.ass"), short, duracion, "libx264",
+                   iconos=iconos)
+    print(f"Ilustraciones: {', '.join(Path(p).stem.removeprefix('icono-') for p, _, _ in iconos) or 'ninguna'}")
     # Versión ligera para verla en la app sin gastar datos
     subprocess.run([editor.FFMPEG, "-hide_banner", "-y", "-v", "error", "-i", str(short), "-vf", "scale=540:-2",
                     "-c:v", "libx264", "-preset", "veryfast", "-crf", "28", "-c:a", "aac", "-b:a", "96k",
