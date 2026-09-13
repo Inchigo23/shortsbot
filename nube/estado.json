@@ -41,7 +41,7 @@
  "parrilla": [
   {
    "id": "g-2026-09-13-enderman-trucos",
-   "cuando": 1789298170.545966
+   "cuando": 1789305157.127535
   }
  ],
  "log": [
@@ -69,11 +69,16 @@
    "t": 1789298170.5460439,
    "nivel": "info",
    "msg": "Short preparado: «3 trucos para que un Enderman no te destroce 👀 #shorts» (vuelo, desierto, atardecer, voz Kokoro em_alex)"
+  },
+  {
+   "t": 1789305157.1273663,
+   "nivel": "aviso",
+   "msg": "Falta el secreto YOUTUBE_TOKEN en GitHub: no puedo subir ni leer estadísticas."
   }
  ],
- "ultimo_ciclo": 1789297876.413662,
+ "ultimo_ciclo": 1789305157.1273704,
  "ultima_estadistica": 0,
  "youtube_ok": false,
  "pausado": false,
- "guiones_en_espera": 1
+ "guiones_en_espera": 0
 }
