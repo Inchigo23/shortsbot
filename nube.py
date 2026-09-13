@@ -152,6 +152,56 @@ def _bajar_archivo(asset_id, destino):
     Path(destino).write_bytes(datos)
 
 
+# ------------------------------------------------------------------ previas (rama «previas», siempre 1 commit)
+
+RAMA_PREVIAS = "previas"
+
+
+def _actualizar_previas(e, nuevas=None):
+    """Deja en la rama «previas» solo la versión ligera de cada vídeo preparado, para verla en la app.
+
+    La rama se reescribe entera (un único commit sin historial), así no crece con el tiempo.
+    `nuevas`: {nombre_archivo: ruta_local} de previas recién hechas.
+    """
+    nuevas = nuevas or {}
+    try:
+        arbol = {x["path"]: x["sha"] for x in _gh("GET", f"/repos/{REPO}/git/trees/{RAMA_PREVIAS}")["tree"]}
+        existe = True
+    except urllib.error.HTTPError as ex:
+        if ex.code not in (404, 409):
+            raise
+        arbol, existe = {}, False
+    entradas = []
+    for p in e["preparados"]:
+        nombre = f"{p['id']}-previa.mp4"
+        if nombre in nuevas:
+            contenido = Path(nuevas[nombre]).read_bytes()
+        elif nombre in arbol:
+            entradas.append({"path": nombre, "mode": "100644", "type": "blob", "sha": arbol[nombre]})
+            continue
+        elif p.get("asset_previa"):  # vídeos preparados antes de existir la rama
+            _bajar_archivo(p["asset_previa"], trabajo(nombre))
+            contenido = trabajo(nombre).read_bytes()
+        else:
+            continue
+        blob = _gh("POST", f"/repos/{REPO}/git/blobs",
+                   {"content": base64.b64encode(contenido).decode(), "encoding": "base64"})
+        entradas.append({"path": nombre, "mode": "100644", "type": "blob", "sha": blob["sha"]})
+    if not entradas:
+        blob = _gh("POST", f"/repos/{REPO}/git/blobs", {"content": "Sin vídeos preparados.\n", "encoding": "utf-8"})
+        entradas.append({"path": "LEEME.txt", "mode": "100644", "type": "blob", "sha": blob["sha"]})
+    arbol_nuevo = _gh("POST", f"/repos/{REPO}/git/trees", {"tree": entradas})
+    commit = _gh("POST", f"/repos/{REPO}/git/commits",
+                 {"message": "Previas de los vídeos preparados", "tree": arbol_nuevo["sha"], "parents": []})
+    if existe:
+        _gh("PATCH", f"/repos/{REPO}/git/refs/heads/{RAMA_PREVIAS}", {"sha": commit["sha"], "force": True})
+    else:
+        _gh("POST", f"/repos/{REPO}/git/refs", {"ref": f"refs/heads/{RAMA_PREVIAS}", "sha": commit["sha"]})
+    for p in e["preparados"]:  # la copia ligera ya no hace falta en la release
+        if p.get("asset_previa"):
+            _borrar_archivo(p.pop("asset_previa"))
+
+
 # ------------------------------------------------------------------ guiones (rama claude/guiones)
 
 def guiones_pendientes(e):
@@ -211,6 +261,7 @@ def plan():
     accion = (os.environ.get("ACCION") or "ciclo").strip()
 
     # Vídeos que has descartado desde la app
+    cambios_previas = False
     for pid in ctrl.get("descartar", []):
         p = next((x for x in e["preparados"] if x["id"] == pid), None)
         if p:
@@ -221,6 +272,9 @@ def plan():
                                     | {"descartado_en": time.time()})
             del e["descartados"][30:]
             log(e, f"Descartado desde la app: «{p['titulo']}»")
+            cambios_previas = True
+    if cambios_previas or any(p.get("asset_previa") for p in e["preparados"]):
+        _actualizar_previas(e)
 
     pausado = bool(ctrl.get("pausado"))
     pendientes = guiones_pendientes(e)
@@ -316,9 +370,9 @@ def paso_montar():
     e["preparados"].append(info | {
         "guion": nombre, "creado": time.time(), "tam_mb": round(short.stat().st_size / 1e6, 1),
         "asset": _subir_archivo(short, short.name, "video/mp4"),
-        "asset_previa": _subir_archivo(previa, previa.name, "video/mp4"),
         "miniatura": "data:image/jpeg;base64," + base64.b64encode(mini.read_bytes()).decode(),
     })
+    _actualizar_previas(e, {previa.name: previa})
     if nombre not in e["guiones_usados"]:
         e["guiones_usados"].append(nombre)
     e["parrilla"] = calcular_parrilla(e, cfg)
@@ -348,6 +402,7 @@ def paso_subir():
     _borrar_archivo(p.get("asset"))
     _borrar_archivo(p.get("asset_previa"))
     e["preparados"].remove(p)
+    _actualizar_previas(e)
     e["subidos"].insert(0, {k: v for k, v in p.items() if k not in ("asset", "asset_previa", "descripcion")}
                         | {"youtube_id": vid, "privacidad": privacidad, "subido_en": time.time()})
     del e["subidos"][100:]
