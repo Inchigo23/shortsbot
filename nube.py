@@ -11,7 +11,8 @@ Lo ejecuta .github/workflows/shortsbot.yml cada 2 horas, paso a paso:
 
 Datos: nube/estado.json (lo escribe este programa), nube/control.json (lo escribe la app) y
 nube/config.json. Los vídeos preparados se guardan en la release «preparados» del repositorio y se
-borran solos al subirse. Los guiones llegan a la rama claude/guiones (los escribe una rutina de Claude).
+borran solos al subirse. Los guiones llegan a nube/guiones/ en la rama claude/guiones (los escribe una
+rutina de Claude en la nube cada día).
 """
 import base64
 import json
@@ -31,6 +32,7 @@ TRABAJO = BASE / "trabajo"
 ESTADO, CONTROL, CONFIG = NUBE / "estado.json", NUBE / "control.json", NUBE / "config.json"
 REPO = os.environ.get("GITHUB_REPOSITORY", "Inchigo23/shortsbot")
 RAMA_GUIONES = "claude/guiones"
+CARPETA_GUIONES = "nube/guiones"   # dentro de la rama claude/guiones
 ETIQUETA = "preparados"
 
 CONFIG_DEFECTO = {
@@ -155,7 +157,7 @@ def _bajar_archivo(asset_id, destino):
 def guiones_pendientes(e):
     subprocess.run(["git", "fetch", "-q", "--depth=1", "origin",
                     f"+refs/heads/{RAMA_GUIONES}:refs/remotes/origin/{RAMA_GUIONES}"], capture_output=True)
-    r = subprocess.run(["git", "ls-tree", "--name-only", f"origin/{RAMA_GUIONES}", "guiones/pendientes/"],
+    r = subprocess.run(["git", "ls-tree", "--name-only", f"origin/{RAMA_GUIONES}", f"{CARPETA_GUIONES}/"],
                        capture_output=True, text=True)
     if r.returncode:
         return []
@@ -164,7 +166,7 @@ def guiones_pendientes(e):
 
 
 def leer_guion(nombre):
-    r = subprocess.run(["git", "show", f"origin/{RAMA_GUIONES}:guiones/pendientes/{nombre}"],
+    r = subprocess.run(["git", "show", f"origin/{RAMA_GUIONES}:{CARPETA_GUIONES}/{nombre}"],
                        capture_output=True, check=True)
     return json.loads(r.stdout.decode("utf-8"))
 
@@ -234,6 +236,11 @@ def plan():
         subir = e["preparados"][0]["id"]
     estadisticas = accion == "estadisticas" or bool(subir) or \
         time.time() - e["ultima_estadistica"] > cfg["horas_estadisticas"] * 3600
+    if os.environ.get("TIENE_YOUTUBE", "true") != "true":
+        if subir or accion == "estadisticas":
+            log(e, "Falta el secreto YOUTUBE_TOKEN en GitHub: no puedo subir ni leer estadísticas.", "aviso")
+        subir, estadisticas = "", False
+        e["youtube_ok"] = False
 
     e["ultimo_ciclo"] = time.time()
     e["pausado"] = pausado

@@ -21,6 +21,7 @@ env:
   TZ: Europe/Madrid
   PYTHONIOENCODING: utf-8
   IMAGEIO_FFMPEG_EXE: /usr/bin/ffmpeg
+  TIENE_YOUTUBE: ${{ secrets.YOUTUBE_TOKEN != '' }}
 
 jobs:
   shortsbot:
