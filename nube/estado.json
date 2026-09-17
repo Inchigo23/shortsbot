@@ -41,7 +41,7 @@
  "parrilla": [
   {
    "id": "g-2026-09-13-enderman-trucos",
-   "cuando": 1789639200.0
+   "cuando": 1789651509.540838
   }
  ],
  "log": [
@@ -124,9 +124,14 @@
    "t": 1789593362.252993,
    "nivel": "aviso",
    "msg": "Falta el secreto YOUTUBE_TOKEN en GitHub: no puedo subir ni leer estadísticas."
+  },
+  {
+   "t": 1789651509.5408304,
+   "nivel": "aviso",
+   "msg": "Falta el secreto YOUTUBE_TOKEN en GitHub: no puedo subir ni leer estadísticas."
   }
  ],
- "ultimo_ciclo": 1789630627.5176435,
+ "ultimo_ciclo": 1789651509.540834,
  "ultima_estadistica": 0,
  "youtube_ok": false,
  "pausado": false,
