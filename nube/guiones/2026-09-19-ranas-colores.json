@@ -1,0 +1,43 @@
+{
+  "titulo": "El color de las ranas no es casualidad 🐸",
+  "gancho": "LA RANA CAMBIA DE COLOR",
+  "narracion": [
+    "¿Sabías que el color de una rana depende de dónde crece?",
+    "No importa de qué color sean sus padres.",
+    "Lo que decide su color es el bioma en el que el renacuajo se convierte en rana.",
+    "Hay ranas de clima templado, de clima frío y de clima cálido.",
+    "Y cada una da un regalo distinto.",
+    "Si una rana se come un cubo de magma, suelta una luz de rana.",
+    "Y el color de esa luz depende de la rana: ocre, verde o perlada.",
+    "Así que para tener las tres luces, necesitas las tres ranas.",
+    "Sígueme para más curiosidades de Minecraft."
+  ],
+  "visuales": [
+    "interrogacion",
+    "cruz",
+    "arbol",
+    "tres",
+    "cofre",
+    "fuego",
+    "sol",
+    "check",
+    "estrella"
+  ],
+  "descripcion": "El bioma donde crece el renacuajo decide el color de la rana, y cada rana da una luz distinta. 🐸\n\n#minecraft #ranas #curiosidades #shorts",
+  "etiquetas": [
+    "minecraft",
+    "ranas minecraft",
+    "luz de rana",
+    "froglight",
+    "curiosidades minecraft",
+    "minecraft español"
+  ],
+  "fuentes": [
+    "https://minecraft.wiki/w/Frog"
+  ],
+  "escena": {
+    "bioma": "nieve",
+    "hora": "dia",
+    "modo": "vuelo"
+  }
+}
