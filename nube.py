@@ -37,10 +37,11 @@ ETIQUETA = "preparados"
 
 CONFIG_DEFECTO = {
     "zona": "Europe/Madrid",
-    "horas_subida": [12, 16],      # a partir de estas horas sube uno (como mucho uno por franja)
-    "max_por_dia": 2,
-    "preparados_max": 3,           # vídeos hechos por adelantado esperando su hora
-    "privacidad": "private",       # "public" cuando Google verifique tu app
+    "horas_subida": [0, 3, 6, 9, 12, 15, 18, 21],  # a partir de estas horas sube uno (uno por franja)
+    "max_por_dia": 8,
+    "minutos_entre_subidas": 120,
+    "preparados_max": 4,           # vídeos hechos por adelantado esperando su hora
+    "privacidad": "public",
     "horas_estadisticas": 6,
     "voz": "kokoro", "voz_kokoro": "em_alex",
     "voz_piper": "es_ES-davefx-medium", "voz_piper_hablante": None,
@@ -235,7 +236,11 @@ def _subidos_el(e, cfg, dia):
 def toca_subir(e, cfg):
     ahora = _ahora(cfg)
     franjas_pasadas = sum(ahora.hour >= h for h in cfg["horas_subida"])
-    return _subidos_el(e, cfg, ahora.date()) < min(franjas_pasadas, cfg["max_por_dia"])
+    if _subidos_el(e, cfg, ahora.date()) >= min(franjas_pasadas, cfg["max_por_dia"]):
+        return False
+    # Nunca dos seguidos: si una vuelta se retrasa, no se «recupera» subiendo varios de golpe
+    ultimo = max((s["subido_en"] for s in e["subidos"]), default=0)
+    return time.time() - ultimo >= cfg.get("minutos_entre_subidas", 0) * 60 - 300
 
 
 def calcular_parrilla(e, cfg):
