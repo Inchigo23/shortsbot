@@ -1,0 +1,43 @@
+{
+  "titulo": "El truco para que los aldeanos te hagan descuentos 💚",
+  "gancho": "DESCUENTOS PARA SIEMPRE",
+  "narracion": [
+    "Este truco hace que los aldeanos te vendan mucho más barato.",
+    "Busca un aldeano zombi.",
+    "Lánzale una poción arrojadiza de debilidad.",
+    "Y después dale una manzana de oro.",
+    "Tardará entre tres y cinco minutos en curarse.",
+    "Si pones camas o barrotes de hierro cerca, irá más rápido.",
+    "Cuando vuelva a ser un aldeano, te hará descuentos para siempre.",
+    "Y los aldeanos que estén cerca también te bajarán un poco los precios.",
+    "Sígueme para más trucos de Minecraft."
+  ],
+  "visuales": [
+    "gema_verde",
+    "calavera",
+    null,
+    "manzana",
+    "reloj",
+    "cama",
+    "gema_verde",
+    "casa",
+    "estrella"
+  ],
+  "descripcion": "Cura a un aldeano zombi con una poción de debilidad y una manzana de oro, y tendrás descuentos permanentes. 🍎\n\n#minecraft #aldeanos #trucos #shorts",
+  "etiquetas": [
+    "minecraft",
+    "aldeano zombi",
+    "curar aldeano",
+    "descuentos aldeanos",
+    "trucos minecraft",
+    "minecraft español"
+  ],
+  "fuentes": [
+    "https://minecraft.wiki/w/Zombie_Villager"
+  ],
+  "escena": {
+    "bioma": "llanura",
+    "hora": "dia",
+    "modo": "panoramica"
+  }
+}
