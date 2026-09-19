@@ -1,0 +1,43 @@
+{
+  "titulo": "El Warden no puede verte 👀",
+  "gancho": "EL WARDEN ES CIEGO",
+  "narracion": [
+    "El Warden, el mob más peligroso de Minecraft, es completamente ciego.",
+    "No te ve: te encuentra por las vibraciones y por el olfato.",
+    "Nota cualquier ruido en unos quince bloques a la redonda.",
+    "Por eso ir agachado ayuda: así no haces vibraciones.",
+    "Pero cuidado, porque si estás cerca te puede encontrar oliendo.",
+    "Y no aparece porque sí: sale cuando activas los chilladores de sculk cuatro veces.",
+    "Tiene quinientos puntos de vida, así que pelear suele ser mala idea.",
+    "Un truco: las flechas lanzadas desde más de treinta bloques no le hacen enfadarse.",
+    "Sígueme para más trucos de supervivencia en Minecraft."
+  ],
+  "visuales": [
+    "ojo_prohibido",
+    "olas",
+    "exclamacion",
+    "check",
+    "exclamacion",
+    "cuatro",
+    "corazon",
+    "flecha",
+    "estrella"
+  ],
+  "descripcion": "El Warden es ciego: te encuentra por las vibraciones y el olfato. Así puedes esquivarlo. 🟦\n\n#minecraft #warden #trucos #shorts",
+  "etiquetas": [
+    "minecraft",
+    "warden",
+    "warden minecraft",
+    "sculk",
+    "trucos minecraft",
+    "minecraft español"
+  ],
+  "fuentes": [
+    "https://minecraft.wiki/w/Warden"
+  ],
+  "escena": {
+    "bioma": "montaña",
+    "hora": "noche",
+    "modo": "vuelo"
+  }
+}
