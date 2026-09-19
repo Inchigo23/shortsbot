@@ -1,0 +1,43 @@
+{
+  "titulo": "El ajolote se hace el muerto (y es genial) 🩷",
+  "gancho": "EL AJOLOTE SE HACE EL MUERTO",
+  "narracion": [
+    "El ajolote es mucho más listo de lo que parece.",
+    "Cuando le hacen daño bajo el agua, a veces se hace el muerto.",
+    "Se queda quieto en el fondo durante diez segundos, mientras se regenera.",
+    "Además, es un gran compañero de pelea.",
+    "Si matas a un mob con el que está luchando, te da regeneración durante unos segundos.",
+    "Y también te quita la fatiga de minería.",
+    "Por cierto, existe un ajolote azul.",
+    "Solo se consigue criándolos, con una probabilidad de uno entre mil doscientos.",
+    "¿Tú ya tienes el tuyo? Sígueme para más curiosidades."
+  ],
+  "visuales": [
+    "interrogacion",
+    "agua",
+    "reloj",
+    "espada",
+    "corazon",
+    "pico",
+    "diamante",
+    "cofre",
+    "estrella"
+  ],
+  "descripcion": "Se hace el muerto para curarse, te ayuda a pelear y existe una versión azul rarísima. El ajolote es una joya. 💙\n\n#minecraft #ajolote #curiosidades #shorts",
+  "etiquetas": [
+    "minecraft",
+    "ajolote",
+    "ajolote azul",
+    "axolotl",
+    "curiosidades minecraft",
+    "minecraft español"
+  ],
+  "fuentes": [
+    "https://minecraft.wiki/w/Axolotl"
+  ],
+  "escena": {
+    "bioma": "bosque",
+    "hora": "atardecer",
+    "modo": "vuelo"
+  }
+}
