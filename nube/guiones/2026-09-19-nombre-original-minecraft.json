@@ -1,0 +1,21 @@
+{
+ "titulo": "Minecraft no se llamó siempre Minecraft 🕹️",
+ "gancho": "ASI EMPEZO TODO EN 2009",
+ "narracion": [
+  "Minecraft no siempre se llamó Minecraft, y la historia real es una pasada.",
+  "Todo empezó en mayo de dos mil nueve, de la mano de un programador llamado Notch.",
+  "Su primera versión ni siquiera tenía nombre oficial, se conocía como cave game.",
+  "En cuestión de días, el proyecto pasó a llamarse Minecraft, Order of the Stone.",
+  "Ese nombre tampoco duró mucho tiempo.",
+  "Muy pronto se quedó solo con el nombre que conocemos hoy, Minecraft.",
+  "Notch se inspiró en juegos como Infiniminer y Dwarf Fortress para crear el suyo.",
+  "En menos de una semana ya existía una primera versión jugable.",
+  "De ahí al fenómeno mundial que es hoy, pasaron menos de tres años.",
+  "Sígueme y te cuento más curiosidades de los inicios de Minecraft."
+ ],
+ "visuales": ["interrogacion", "reloj", "bloque", "libro", "cruz", "check", "libro", "reloj", "tres", "corazon"],
+ "descripcion": "Antes de ser el fenómeno mundial que conoces, Minecraft pasó por dos nombres distintos en solo unos días. 🕹️\n\n#minecraft #historia #curiosidades #shorts #gaming",
+ "etiquetas": ["minecraft", "historia de minecraft", "notch", "curiosidades minecraft", "minecraft español", "origen minecraft", "datos curiosos"],
+ "fuentes": ["https://minecraft.wiki/w/Cave_game_tech_test"],
+ "escena": {"bioma": "montaña", "hora": "dia", "modo": "panoramica"}
+}

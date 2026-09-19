@@ -1,0 +1,21 @@
+{
+ "titulo": "El bloque que se bebe el mar entero 🧽",
+ "gancho": "ESTE BLOQUE BEBE EL AGUA",
+ "narracion": [
+  "Hay un bloque en Minecraft capaz de dejar seca una habitación entera de agua.",
+  "Se llama esponja, y no es solo decoración.",
+  "Colócala cerca del agua y empezará a absorberla sola, sin que hagas nada más.",
+  "Puede secar agua hasta a seis bloques de distancia, en las seis direcciones.",
+  "Y aguanta muchísimo, hasta ciento dieciocho bloques de agua de una sola vez.",
+  "Eso sí, en cuanto absorbe agua se convierte en esponja mojada.",
+  "En la edición java, la secas metiéndola al horno o llevándola al nether.",
+  "En bedrock, con dejarla en un bioma seco un rato, se seca sola.",
+  "Es perfecta para vaciar bases bajo el agua sin perder ni un segundo.",
+  "Guarda este truco y no te olvides de darle al botón de seguir."
+ ],
+ "visuales": ["agua", "bloque", "agua", "olas", "agua", "check", "fuego", "sol", "casa", "corazon"],
+ "descripcion": "La esponja de Minecraft puede secar cientos de bloques de agua de golpe, perfecta para tus construcciones bajo el mar. 🧽\n\n#minecraft #trucos #curiosidades #shorts",
+ "etiquetas": ["minecraft", "esponja minecraft", "trucos minecraft", "construccion minecraft", "curiosidades minecraft", "minecraft español", "bloques minecraft"],
+ "fuentes": ["https://minecraft.wiki/w/Sponge"],
+ "escena": {"bioma": "desierto", "hora": "dia", "modo": "vuelo"}
+}

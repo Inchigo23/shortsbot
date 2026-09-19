@@ -1,0 +1,22 @@
+{
+ "titulo": "El nombre secreto que pone tus animales boca abajo 🙃",
+ "gancho": "PONLE ESTE NOMBRE Y FLIPA",
+ "narracion": [
+  "Hay un truco escondido en Minecraft que muy poca gente conoce.",
+  "Coge una etiqueta de las de encantar nombres.",
+  "Escríbele el nombre Dinnerbone, tal cual, con esa mayúscula.",
+  "Ahora pónsela a cualquier mob, una vaca, un zombi, hasta un jefe.",
+  "El bicho se queda patas arriba, andando boca abajo como si nada.",
+  "Si escribes Grumm en vez de Dinnerbone, pasa exactamente lo mismo.",
+  "Es un guiño a dos desarrolladores reales que tenían esos apodos.",
+  "Funciona igual en la edición java y en la edición bedrock.",
+  "Eso sí, tienes que escribirlo tal cual, con esas mayúsculas exactas.",
+  "Guárdate este dato y prueba a darle la vuelta a tu próxima vaca.",
+  "Dale al botón de seguir si quieres más secretos como este."
+ ],
+ "visuales": ["interrogacion", "etiqueta", "libro", "cerdo", "exclamacion", "etiqueta", null, "check", "ojo", "oveja", "corazon"],
+ "descripcion": "Con un simple nombre puedes voltear a cualquier mob en Minecraft, es un guiño real a los creadores del juego. 🙃\n\n#minecraft #curiosidades #trucos #shorts #gaming",
+ "etiquetas": ["minecraft", "curiosidades minecraft", "trucos minecraft", "easter eggs minecraft", "dinnerbone", "minecraft español", "secretos minecraft"],
+ "fuentes": ["https://minecraft.wiki/w/Name_Tag"],
+ "escena": {"bioma": "bosque", "hora": "noche", "modo": "panoramica"}
+}

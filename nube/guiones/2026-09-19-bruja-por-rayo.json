@@ -1,0 +1,21 @@
+{
+ "titulo": "Nunca dejes a un aldeano bajo la tormenta ⚡",
+ "gancho": "UN RAYO LO CAMBIA TODO",
+ "narracion": [
+  "Si hay tormenta cerca de tus aldeanos, corre a protegerlos ya.",
+  "Un rayo que caiga a menos de cuatro bloques de un aldeano lo transforma.",
+  "No se convierte en zombi, se convierte en bruja.",
+  "Y esa bruja no es tu amiga, aunque antes le compraras esmeraldas.",
+  "Te atacará sin dudarlo con sus pociones de veneno y de daño.",
+  "Lo peor es que no hay marcha atrás.",
+  "Esa bruja se queda así para siempre, ya no vuelve a ser aldeano.",
+  "Además, no desaparece sola con el paso del tiempo.",
+  "Así que si hay tormenta, mete a tus aldeanos dentro de casa cuanto antes.",
+  "Cuéntame si te ha pasado alguna vez y quédate por aquí para más datos."
+ ],
+ "visuales": ["rayo", "cuatro", "calavera", "gema_verde", "explosion", "cruz", "reloj", "cruz", "casa", "corazon"],
+ "descripcion": "Un rayo cerca de un aldeano puede convertirlo en una bruja hostil para siempre, así que protégelos si hay tormenta. ⚡\n\n#minecraft #aldeanos #curiosidades #shorts",
+ "etiquetas": ["minecraft", "aldeanos minecraft", "bruja minecraft", "curiosidades minecraft", "trucos minecraft", "minecraft español", "mobs minecraft"],
+ "fuentes": ["https://minecraft.wiki/w/Witch"],
+ "escena": {"bioma": "llanura", "hora": "noche", "modo": "vuelo"}
+}
