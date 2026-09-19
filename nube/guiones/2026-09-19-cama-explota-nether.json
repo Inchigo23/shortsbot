@@ -1,0 +1,43 @@
+{
+  "titulo": "Nunca duermas en el Nether 💥",
+  "gancho": "NUNCA DUERMAS EN EL NETHER",
+  "narracion": [
+    "Nunca intentes dormir en el Nether.",
+    "Si usas una cama en el Nether o en el End, explota.",
+    "Y no es una explosión cualquiera: es más fuerte que la de una dinamita.",
+    "Además, prende fuego a los bloques de alrededor, y a ti también.",
+    "En el mundo normal tampoco puedes dormir siempre.",
+    "Si hay un monstruo a menos de ocho bloques de la cama, el juego no te deja descansar.",
+    "Y cuenta también si está hasta cinco bloques por encima o por debajo.",
+    "Así que antes de dormir, revisa bien los alrededores.",
+    "Sígueme para no morir de formas tontas en Minecraft."
+  ],
+  "visuales": [
+    "exclamacion",
+    "explosion",
+    "dinamita",
+    "fuego",
+    "cama",
+    "calavera",
+    "bloque",
+    "ojo",
+    "estrella"
+  ],
+  "descripcion": "En el Nether y en el End las camas explotan con más fuerza que una dinamita. Y en el mundo normal tampoco siempre puedes dormir. 🛏️\n\n#minecraft #nether #curiosidades #shorts",
+  "etiquetas": [
+    "minecraft",
+    "nether",
+    "cama minecraft",
+    "explosion minecraft",
+    "curiosidades minecraft",
+    "minecraft español"
+  ],
+  "fuentes": [
+    "https://minecraft.wiki/w/Bed"
+  ],
+  "escena": {
+    "bioma": "desierto",
+    "hora": "atardecer",
+    "modo": "panoramica"
+  }
+}
