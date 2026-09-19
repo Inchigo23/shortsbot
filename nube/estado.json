@@ -132,19 +132,19 @@
  "parrilla": [
   {
    "id": "g-2026-09-13-enderman-trucos",
-   "cuando": 1789810698.207475
+   "cuando": 1789826186.732439
   },
   {
    "id": "g-2026-09-19-ajolote-muerto",
-   "cuando": 1789810698.207475
+   "cuando": 1789826186.732439
   },
   {
    "id": "g-2026-09-19-allay-duplicar",
-   "cuando": 1789810698.207475
+   "cuando": 1789826186.732439
   },
   {
    "id": "g-2026-09-19-bruja-por-rayo",
-   "cuando": 1789810698.207475
+   "cuando": 1789826186.732439
   }
  ],
  "log": [
@@ -282,11 +282,16 @@
    "t": 1789810698.2075675,
    "nivel": "info",
    "msg": "Short preparado: «Nunca dejes a un aldeano bajo la tormenta ⚡ #shorts» (vuelo, llanura, noche, voz Kokoro em_alex)"
+  },
+  {
+   "t": 1789826186.7324302,
+   "nivel": "aviso",
+   "msg": "Falta el secreto YOUTUBE_TOKEN en GitHub: no puedo subir ni leer estadísticas."
   }
  ],
- "ultimo_ciclo": 1789810501.4656599,
+ "ultimo_ciclo": 1789826186.732434,
  "ultima_estadistica": 0,
  "youtube_ok": false,
  "pausado": false,
- "guiones_en_espera": 10
+ "guiones_en_espera": 9
 }
