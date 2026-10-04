@@ -132,11 +132,11 @@
  "parrilla": [
   {
    "id": "g-2026-09-13-enderman-trucos",
-   "cuando": 1791068882.502004
+   "cuando": 1791081804.830821
   },
   {
    "id": "g-2026-09-19-ajolote-muerto",
-   "cuando": 1791075600.0
+   "cuando": 1791081804.830821
   },
   {
    "id": "g-2026-09-19-allay-duplicar",
@@ -647,9 +647,14 @@
    "t": 1791068882.5019977,
    "nivel": "aviso",
    "msg": "Falta el secreto YOUTUBE_TOKEN en GitHub: no puedo subir ni leer estadísticas."
+  },
+  {
+   "t": 1791081804.830816,
+   "nivel": "aviso",
+   "msg": "Falta el secreto YOUTUBE_TOKEN en GitHub: no puedo subir ni leer estadísticas."
   }
  ],
- "ultimo_ciclo": 1791068882.5020003,
+ "ultimo_ciclo": 1791081804.8308191,
  "ultima_estadistica": 0,
  "youtube_ok": false,
  "pausado": false,
