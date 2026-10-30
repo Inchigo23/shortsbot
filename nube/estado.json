@@ -132,27 +132,22 @@
  "parrilla": [
   {
    "id": "g-2026-09-13-enderman-trucos",
-   "cuando": 1793349876.350093
+   "cuando": 1793375973.527161
   },
   {
    "id": "g-2026-09-19-ajolote-muerto",
-   "cuando": 1793349876.350093
+   "cuando": 1793375973.527161
   },
   {
    "id": "g-2026-09-19-allay-duplicar",
-   "cuando": 1793349876.350093
+   "cuando": 1793375973.527161
   },
   {
    "id": "g-2026-09-19-bruja-por-rayo",
-   "cuando": 1793349876.350093
+   "cuando": 1793375973.527161
   }
  ],
  "log": [
-  {
-   "t": 1789793396.9743736,
-   "nivel": "info",
-   "msg": "Short preparado: «El mob que puedes duplicar en Minecraft 🎵 #shorts» (vuelo, bosque, dia, voz Kokoro em_alex)"
-  },
   {
    "t": 1789810501.465658,
    "nivel": "aviso",
@@ -1147,9 +1142,14 @@
    "t": 1793349876.350086,
    "nivel": "aviso",
    "msg": "Falta el secreto YOUTUBE_TOKEN en GitHub: no puedo subir ni leer estadísticas."
+  },
+  {
+   "t": 1793375973.527153,
+   "nivel": "aviso",
+   "msg": "Falta el secreto YOUTUBE_TOKEN en GitHub: no puedo subir ni leer estadísticas."
   }
  ],
- "ultimo_ciclo": 1793349876.3500903,
+ "ultimo_ciclo": 1793375973.5271575,
  "ultima_estadistica": 0,
  "youtube_ok": false,
  "pausado": false,
